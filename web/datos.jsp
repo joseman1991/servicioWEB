@@ -1,5 +1,6 @@
  
 
+<%@page import="database.Estados"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="database.Conexion"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -18,16 +19,31 @@
             <h2>Reporte 
                 <%
                     int op = Integer.parseInt(request.getParameter("op"));
+                    Estados est = new Estados();
+                    try {
+                        est.obtenerDatos();
+                    } catch (Exception e) {
+                        out.write(e.getMessage());
+                    }
                     switch (op) {
                         case 1:
+                            if (est.diario == 0) {
+                                response.sendRedirect("datos_1.jsp?op=1");
+                            }
                             out.write(" diario");
                             break;
 
                         case 2:
+                            if (est.semanal == 0) {
+                                response.sendRedirect("datos_1.jsp?op=2");
+                            }
                             out.write(" semanal");
                             break;
 
                         case 3:
+                            if (est.mensual == 0) {
+                                response.sendRedirect("datos_1.jsp?op=3");
+                            }
                             out.write(" mensual");
                             break;
                     }
@@ -37,9 +53,9 @@
         <div class="row">
             <div class="col-3 col-s-3 menu">
                 <ul>
-                    <li><a class="text-white" href="datos.jsp?op=1">Diario</a></li>
-                    <li><a class="text-white" href="datos.jsp?op=2">Semanal</a></li>
-                    <li><a class="text-white" href="datos.jsp?op=3">Mensual</a></li>
+                    <li><a class="text-white" href="datos.jsp?op=1">Diario (<% out.write(est.diario + "");%>) </a></li>
+                    <li><a class="text-white" href="datos.jsp?op=2">Semanal (<% out.write(est.semanal + "");%>)</a></li>
+                    <li><a class="text-white" href="datos.jsp?op=3">Mensual (<% out.write(est.mensual + "");%>)</a></li>
                 </ul>
             </div>
 

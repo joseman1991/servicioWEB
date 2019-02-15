@@ -102,8 +102,41 @@ $$
 language plpgsql;
 
 select * from obtenerRegistros(2);
-select to_char(current_date,'dd/mm/yyyy');
-select to_char(current_timestamp,'dd');
 
 
-SELECT CURRENT_TIMESTAMP + CAST('7 days' AS INTERVAL);
+create or replace function obtenerConteo(int) returns int
+as
+$$
+declare
+ conteo int; 
+begin
+ case  $1 
+ --diario
+ when 1 then
+   select count(*) into conteo
+    from eventos ev inner join estados es on ev.idestado=es.idestado
+    where to_char(fecha,'yyyy-mm-dd') = to_char(current_timestamp,'yyyy-mm-dd') ;
+   
+ 
+
+ --semanal
+ when 2 then
+  select count(*) into conteo
+    from eventos ev inner join estados es on ev.idestado=es.idestado
+    where fecha::DATE between obtenerFechaDomingo()::DATE and current_timestamp::DATE;
+   
+  
+
+ --mensual
+ when 3 then
+  select count(*) into conteo
+    from eventos ev inner join estados es on ev.idestado=es.idestado
+    where fecha::DATE between obtenerFechaInicioMes()::DATE and current_timestamp::DATE; 
+ end case; 
+ return conteo;
+end
+$$
+language plpgsql;
+
+select obtenerConteo(3);
+
